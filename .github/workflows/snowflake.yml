@@ -1,0 +1,26 @@
+name: Snowflake CI
+on: [push]
+jobs:
+  run-sql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install snowflake-connector-python
+      - name: Test connection
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PAT: ${{ secrets.SNOWFLAKE_PAT }}
+        run: |
+          python - <<'EOF'
+          import os, snowflake.connector
+          conn = snowflake.connector.connect(
+              account=os.environ["SNOWFLAKE_ACCOUNT"],
+              user=os.environ["SNOWFLAKE_USER"],
+              authenticator="PROGRAMMATIC_ACCESS_TOKEN",
+              token=os.environ["SNOWFLAKE_PAT"],
+              role="GITHUB_CI_ROLE",
+              warehouse="SNOWFLAKE_LEARNING_WH",
+          )
+          print(conn.cursor().execute("SELECT CURRENT_USER(), CURRENT_ROLE()").fetchone())
+          EOF

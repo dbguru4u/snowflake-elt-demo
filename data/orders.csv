@@ -1,0 +1,5 @@
+order_date,order_id,customer,quantity,unit_price
+2026-01-02,1001,Ada,2,12.50
+2026-01-02,1002,Lin,1,30.00
+2026-01-03,1003,Ada,3,8.25
+2026-01-03,1004,Sam,1,100.00
